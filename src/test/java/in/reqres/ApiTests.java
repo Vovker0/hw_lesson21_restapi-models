@@ -28,7 +28,7 @@ public class ApiTests extends TestBase {
         step("Check that data has " + ITEMS + " items", () ->
                 assertThat(response.getTotal()).isEqualTo(ITEMS));
         step("Check that data has " + TOTAL_PAGES + " total pages", () ->
-                assertThat(response.getTotal_pages()).isEqualTo(TOTAL_PAGES));
+                assertThat(response.getTotalPages()).isEqualTo(TOTAL_PAGES));
         step("Check that data has " + ITEMS / TOTAL_PAGES + " items per page", () ->
                 assertThat(response.getData()).hasSize(ITEMS / TOTAL_PAGES));
         step("Check that support URL is " + SUPPORT_URL, () ->
@@ -51,7 +51,7 @@ public class ApiTests extends TestBase {
         step("Check that id " + DATA_ID + " color is " + DATA_ID_COLOR, () ->
                 assertThat(response.getData()[DATA_ID - 1].getColor()).isEqualTo(DATA_ID_COLOR));
         step("Check that id " + DATA_ID + " pantone is " + DATA_ID_PANTONE, () ->
-                assertThat(response.getData()[DATA_ID - 1].getPantone_value()).isEqualTo(DATA_ID_PANTONE));
+                assertThat(response.getData()[DATA_ID - 1].getPantoneValue()).isEqualTo(DATA_ID_PANTONE));
     }
 
     private static ResourcesListModel getResourcesListModel() {
