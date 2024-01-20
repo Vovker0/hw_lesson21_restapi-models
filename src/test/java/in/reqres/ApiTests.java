@@ -1,6 +1,8 @@
 package in.reqres;
 
-import in.reqres.models.*;
+import in.reqres.models.CreateUpdateUserModel;
+import in.reqres.models.ResourcesListModel;
+import in.reqres.models.SingleResourceModel;
 import io.qameta.allure.Owner;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Tag;
@@ -21,14 +23,7 @@ public class ApiTests extends TestBase {
     @Owner("Vladimir")
     @DisplayName("Get resources list Test")
     public void getResourcesListTest() {
-
-        ResourcesListModel response = step("Make request to get resources list", () ->
-                given(resourcesRequestSpec)
-                        .when()
-                        .get(RES_LIST_URL)
-                        .then()
-                        .spec(resourcesFoundResponseSpec)
-                        .extract().as(ResourcesListModel.class));
+        ResourcesListModel response = getResourcesListModel();
 
         step("Check that data has " + ITEMS + " items", () ->
                 assertThat(response.getTotal()).isEqualTo(ITEMS));
@@ -45,14 +40,7 @@ public class ApiTests extends TestBase {
     @Owner("Vladimir")
     @DisplayName("Check resource item with particular ID from resources list")
     public void resourcesListIdDataTest() {
-
-        ResourcesListModel response = step("Make request to get resources list", () ->
-                given(resourcesRequestSpec)
-                        .when()
-                        .get(RES_LIST_URL)
-                        .then()
-                        .spec(resourcesFoundResponseSpec)
-                        .extract().as(ResourcesListModel.class));
+        ResourcesListModel response = getResourcesListModel();
 
         step("Check that received data id is: " + DATA_ID, () ->
                 assertThat(response.getData()[DATA_ID - 1].getId()).isEqualTo(4));
@@ -64,6 +52,16 @@ public class ApiTests extends TestBase {
                 assertThat(response.getData()[DATA_ID - 1].getColor()).isEqualTo(DATA_ID_COLOR));
         step("Check that id " + DATA_ID + " pantone is " + DATA_ID_PANTONE, () ->
                 assertThat(response.getData()[DATA_ID - 1].getPantone_value()).isEqualTo(DATA_ID_PANTONE));
+    }
+
+    private static ResourcesListModel getResourcesListModel() {
+        return step("Make request to get resources list", () ->
+                given(resourcesRequestSpec)
+                        .when()
+                        .get(RES_LIST_URL)
+                        .then()
+                        .spec(resourcesFoundResponseSpec)
+                        .extract().as(ResourcesListModel.class));
     }
 
     @Test
@@ -91,18 +89,18 @@ public class ApiTests extends TestBase {
         userData.setName(USER_NAME);
         userData.setJob(USER_JOB);
 
-        CreateUserResponseModel response = step("Make request to create user" + USER_NAME, () ->
+        CreateUpdateUserModel response = step("Make request to create user " + USER_NAME, () ->
                 given(createUpdateUserSpec)
                         .body(userData)
                         .when()
                         .post(USERS_URL)
                         .then()
                         .spec(createUserResponseSpec)
-                        .extract().as(CreateUserResponseModel.class));
+                        .extract().as(CreateUpdateUserModel.class));
 
-        step("Check that created user name is" + USER_NAME, () ->
+        step("Check that created user name is " + USER_NAME, () ->
                 assertEquals(USER_NAME, response.getName()));
-        step("Check that created user job is" + USER_JOB, () ->
+        step("Check that created user job is " + USER_JOB, () ->
                 assertEquals(USER_JOB, response.getJob()));
     }
 
@@ -115,18 +113,18 @@ public class ApiTests extends TestBase {
         userData.setName(USER_NAME);
         userData.setJob(USER_NEW_JOB);
 
-        UpdateUserResponseModel response = step("Make request to update user's job for the user " + USER_NAME,
+        CreateUpdateUserModel response = step("Make request to update user's job for the user " + USER_NAME,
                 () -> given(createUpdateUserSpec)
                         .body(userData)
                         .when()
                         .patch(USERS_UPDATE_URL)
                         .then()
                         .spec(updateUserResponseSpec)
-                        .extract().as(UpdateUserResponseModel.class));
+                        .extract().as(CreateUpdateUserModel.class));
 
-        step("Check that updated user name is" + USER_NAME, () ->
+        step("Check that updated user name is " + USER_NAME, () ->
                 assertEquals(USER_NAME, response.getName()));
-        step("Check that updated user job is" + USER_NEW_JOB, () ->
+        step("Check that updated user job is " + USER_NEW_JOB, () ->
                 assertEquals(USER_NEW_JOB, response.getJob()));
     }
 }
